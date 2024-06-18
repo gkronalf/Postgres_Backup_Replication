@@ -112,7 +112,7 @@ host    replication     all            127.0.0.1/32              scram-sha-256
 host    replication     all            ::1/128                   scram-sha-256
 host    replication     replication    192.168.255.100/32        scram-sha-256
 host    replication     replication    192.168.255.200/32        scram-sha-256
-host    all             barman         192.168.255.200/32        scram-sha-256
+host    all             barman         192.168.255.250/32        scram-sha-256
 ```
   
 Последние строки в файле разрешают репликацию пользователю replication и доступ в базам для пользователя barman.  
@@ -127,34 +127,34 @@ host    all             barman         192.168.255.200/32        scram-sha-256
 ``` listen_addresses = 'localhost, 192.168.255.100' ```
 - Запускаем службу postgresql-server: ``` systemctl start postgresql ```
 
-Проверка репликации: 
-На хосте node1 в psql создадим базу otus_test и выведем список БД: 
-postgres=# CREATE DATABASE otus_test;
-CREATE DATABASE
-postgres=# \l
-                                  List of databases
+Проверка репликации:  
+На хосте masterBD в psql создадим базу otus_test и выведем список БД:  
+```
+postgres=# CREATE DATABASE otus_test;  
+CREATE DATABASE  
+postgres=# \l  
+                                  List of databases  
    Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   
------------+----------+----------+-------------+-------------+-----------------------
- otus_test | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
- postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
- template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres  
+-----------+----------+----------+-------------+-------------+-----------------------  
+ otus_test | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |  
+ postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |  
+ template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres    
  template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres    
-(4 rows)
-postgres=# 
-
-На хосте node2 также в psql также проверим список БД (команда \l), в списке БД должна появится БД otus_test. 
-
+(4 rows)  
+postgres=#   
+```
+  
+На хосте slaveBD также в psql также проверим список БД (команда \l), в списке БД должна появится БД otus_test.   
+  
 Также можно проверить репликацию другим способом: 
-На хосте node1 в psql вводим команду: select * from pg_stat_replication;
-На хосте node2 в psql вводим команду: select * from pg_stat_wal_receiver;
+На хосте masterBD в psql вводим команду: ```select * from pg_stat_replication;```
+На хосте slaveBD в psql вводим команду: ```select * from pg_stat_wal_receiver;```
 Вывод обеих команд должен быть не пустым. 
-
+  
 На этом настройка репликации завершена. 
+  
+В случае выхода из строя master-хоста (masterBD), на slave-сервере (slaveBD) в psql необхоимо выполнить команду ```select pg_promote();```
 
-В случае выхода из строя master-хоста (node1), на slave-сервере (node2) в psql необхоимо выполнить команду select pg_promote();
-Также можно создать триггер-файл. Если в дальнейшем хост node1 заработает корректно, то для восстановления его работы (как master-сервера) необходимо: 
-Настроить сервер node1 как slave-сервер
-Также с помощью команды select pg_promote(); перевести режим его работы в master
 
 
 
