@@ -122,7 +122,7 @@ host    all             barman         192.168.255.250/32        scram-sha-256
 2. На хосте slaveBD: 
 - Останавливаем postgresql-server: ``` systemctl stop postgresql ```
 - С помощью утилиты pg_basebackup копируем данные с masterBD:  
-``` pg_basebackup -h 192.168.57.11 -U    /var/lib/postgresql/14/main/ -R ```
+``` pg_basebackup -h 192.168.255.100 -U    /var/lib/postgresql/14/main/ -R ```
 - В файле  /etc/postgresql/14/main/postgresql.conf меняем параметр:  
 ``` listen_addresses = 'localhost, 192.168.255.100' ```
 - Запускаем службу postgresql-server: ``` systemctl start postgresql ```
