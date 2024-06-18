@@ -1,0 +1,6 @@
+[BDServers]
+masterBD ansible_host=192.168.50.20 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/masterBD/virtualbox/private_key 
+slaveBD ansible_host=192.168.50.21 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/slaveBD/virtualbox/private_key 
+
+[backupServers]
+backup ansible_host=192.168.50.100 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/backup/virtualbox/private_key 

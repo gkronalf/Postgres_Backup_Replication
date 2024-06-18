@@ -1,0 +1,14 @@
+[masterBD]
+description = "backup masterBD"
+ssh_command = ssh postgres@192.168.255.100 
+conninfo = host=192.168.255.100 user=barman port=5432 dbname=postgres
+retention_policy_mode = auto
+retention_policy = RECOVERY WINDOW OF 7 days
+wal_retention_policy = main
+streaming_archiver=on
+path_prefix = /usr/lib/postgresql/14/bin/
+create_slot = auto
+slot_name = masterBD
+streaming_conninfo = host=192.168.255.100 user=barman 
+backup_method = postgres
+archiver = off

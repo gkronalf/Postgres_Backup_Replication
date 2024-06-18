@@ -1,0 +1,59 @@
+---
+# tasks file for postgres_install
+- name: "Install postgres"
+  tags: "postgres"
+  ansible.builtin.apt:
+    name:
+    - postgresql
+    - postgresql-14-repmgr
+    - python3-psycopg2
+    - postgresql-contrib
+    - libpq-dev
+    - barman
+    - net-tools
+    - barman-cli
+    state: present
+    update_cache: true
+
+- name: "Ensure all configured locales are present"
+  tags: "postgres"
+  community.general.locale_gen: 
+    name: 'en_US.UTF-8'
+    state: present
+  register: locale_gen_result
+
+- name: Copy files configured pg_hba.conf
+  tags: "postgres"
+  ansible.builtin.template:
+    src: templates/postgres/pg_hba.conf.j2
+    dest: /etc/postgresql/14/main/pg_hba.conf
+    owner: "postgres"
+    group: "postgres"
+    mode: 0640
+    follow: yes
+
+- name: Copy files configured postresql.conf
+  tags: "postgres"
+  ansible.builtin.template:
+    src: templates/postgres/postgresql.conf.j2
+    dest: /etc/postgresql/14/main/postgresql.conf
+    owner: "postgres"
+    group: "postgres"
+    mode: 0644
+    follow: yes
+
+- name: Copy files configured pg_ident.conf
+  tags: "postgres"
+  ansible.builtin.template:
+    src: templates/postgres/pg_ident.conf.j2
+    dest: /etc/postgresql/14/main/pg_ident.conf
+    owner: "postgres"
+    group: "postgres"
+    mode: 0644
+    follow: yes
+
+- name: "Restart service PostgreSQL-14"
+  tags: "postgres"
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted

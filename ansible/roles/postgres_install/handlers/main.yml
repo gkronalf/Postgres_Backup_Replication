@@ -1,0 +1,7 @@
+---
+# handlers file for postgres_install
+- name: "Force-restart PostgreSQL after new locales are generated"
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted
+  when: locale_gen_result.changed

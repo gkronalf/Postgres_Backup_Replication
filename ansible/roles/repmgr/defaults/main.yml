@@ -1,0 +1,5 @@
+---
+# defaults file for repmgr
+replicator_password: 'Otus2024!'
+master_ip: '192.168.255.100'
+slave_ip: '192.168.255.200'

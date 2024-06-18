@@ -1,0 +1,23 @@
+---
+
+- name: "Install tools"
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set timezone Moscow
+      community.general.timezone:
+        name: Europe/Moscow
+
+- name: "Install BDServers"
+  hosts: BDServers
+  become: true
+  roles:
+  - postgres_install
+  - repmgr
+
+- name: "Install barman"
+  hosts: backupServers, BDServers
+  become: true
+  roles:
+  - barman_install
